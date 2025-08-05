@@ -1,0 +1,5 @@
+asciiart.c
+*.out
+*.ptap
+*.o
+*.dump
