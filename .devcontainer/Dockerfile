@@ -100,6 +100,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     # ssh is required to handle GitHub in the container
     git ssh make less file ca-certificates \
     libgmp-dev libmpfr-dev libmpc-dev \
+    python3 python3-dev python3-venv python-is-python3 \
     # System tools
     locales tzdata \
     # Configure locale
@@ -111,3 +112,22 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 # Default user
 USER vscode
+
+# COPY requirements.txt .
+# ARG PIP_CACHE_DIR=/home/vscode/.cache/pip
+# RUN mkdir -p $PIP_CACHE_DIR
+# RUN --mount=type=cache,target=/home/vscode/.cache/pip \
+#     sudo chown vscode:vscode /home/vscode/.cache/pip \
+#     && python3 -m venv $HOME/venv \
+#     && $HOME/venv/bin/pip install --upgrade pip \
+#     && $HOME/venv/bin/pip install -r requirements.txt
+
+# # activate venv
+# RUN cat <<'EOF' >> /home/vscode/.bashrc
+
+# export LANG=$LANG
+
+# if [ -f "$HOME/venv/bin/activate" ] && [ -z "$VIRTUAL_ENV" ]; then
+#     . "$HOME/venv/bin/activate"
+# fi
+# EOF
