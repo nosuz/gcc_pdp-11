@@ -9,8 +9,11 @@ FROM ubuntu:latest as builder
 # suppress clear apt cache
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
-ENV TARGET=pdp11-aout
-ENV PREFIX=/usr/local
+ARG ARG_TARGET=pdp11-aout
+ARG ARG_PREFIX=/usr/local
+
+ENV TARGET=$ARG_TARGET
+ENV PREFIX=$ARG_PREFIX
 ENV PATH=$PREFIX/bin:$PATH
 
 ENV BINUTILES_VER=2.45
@@ -51,8 +54,11 @@ RUN wget https://sourceware.org/pub/gcc/releases/gcc-$GCC_VER/gcc-$GCC_VER.tar.g
 # Stage 2
 FROM ubuntu:latest
 
-ENV TARGET=pdp11-aout
-ENV PREFIX=/usr/local
+# Install packages
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV TARGET=$ARG_TARGET
+ENV PREFIX=$ARG_PREFIX
 ENV PATH=$PREFIX/bin:$PATH
 
 COPY --from=builder $PREFIX $PREFIX
@@ -87,9 +93,6 @@ RUN set -eux; \
 #     && apt-get install -y sudo \
 #     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
 #     && chmod 0440 /etc/sudoers.d/$USERNAME
-
-# Install packages
-ENV DEBIAN_FRONTEND=noninteractive
 
 # https://github.com/moby/buildkit/issues/1662#issuecomment-683962222
 RUN --mount=type=cache,target=/var/cache/apt \
